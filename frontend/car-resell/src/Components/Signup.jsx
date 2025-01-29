@@ -1,13 +1,14 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import signupimg from '../assets/signupimg.jpg'; 
 const Signup = () => {
   return (
     <div className="h-screen flex">
+      
       <div
         className="hidden lg:flex w-full lg:w-1/2 justify-around items-center bg-cover bg-center bg-gradient-to-t from-black via-transparent to-black"
         style={{
-//  backgroundImage: 'url(https://i.pinimg.com/736x/79/ed/66/79ed669ee3285db9d2ea88a717c88f22.jpg)',
             backgroundImage: `url(${signupimg})`, 
-
         }}
       >
       </div>
@@ -68,9 +69,8 @@ const Signup = () => {
               Sign Up
             </button>
 
-            {/* Additional Links */}
             <div className="flex justify-between mt-4">
-              <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Already have an account?</span>
+              <Link to="/login" className="text-sm ml-2 hover:text-blue-500 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Already have an account?</Link>
               <a href="#" className="text-sm ml-2 hover:text-blue-500 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Forgot Password?</a>
             </div>
           </form>
