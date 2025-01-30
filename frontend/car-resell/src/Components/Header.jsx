@@ -1,30 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaSearch } from "react-icons/fa";
-import re from "../assets/re.png"
+import { FaSearch, FaRegUserCircle } from "react-icons/fa";
+import { IoMdArrowDropdown } from "react-icons/io";
+
+import re from "../assets/re.png";
+
 const Header = () => {
   const [search, setSearch] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null); 
+
+  useEffect(() => {
+
+//     User clicks anywhere → handleClickOutside is triggered.
+// If the click is outside the dropdown, it sets setIsDropdownOpen(false) to close the dropdown.
+// If the click is inside the dropdown, nothing happens (the dropdown remains open).
+    const handleClickOutside = (event) => {
+      // Check if the click happened outside the dropdown
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+  // Add an event listener for "mousedown" (click) events
+    document.addEventListener('mousedown', handleClickOutside);
+
+  // Clean up the event listener when the component unmounts or when dependencies change
+  // The cleanup function removes the event listener to avoid any memory issues.
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLinkClick = () => {
+    setIsDropdownOpen(false); 
+  };
+
   return (
-    <header className="flex justify-between items-center h-20 p-4 bg-red-600 text-white">
+    <header className="flex justify-between items-center h-18
+     p-4 bg-red-600 text-white relative z-30">
       <div className="logo">
         <Link to="/">
-          <img
-            src={re}  
-            alt="Car Marketplace Logo"
-            className=" h-40 w-auto object-contain"  
-          />
+          <img src={re} className=" h-40 w-auto object-contain"/>
         </Link>
       </div>
 
       {/* Centered Search Bar with adjusted width */}
       <div className="relative flex-1 mx-8">
-        <input
-          type="text"
+        <input type="text"
           value={search}
           onChange={handleSearchChange}
           placeholder="Search Cars by Brand/Model"
@@ -38,9 +69,32 @@ const Header = () => {
         <ul className="flex space-x-8">
           <li><Link to="/buy" className="hover:text-yellow-400">Buy a Car</Link></li>
           <li><Link to="/sell" className="hover:text-yellow-400">Sell a Car</Link></li>
-          <li><Link to="/login" className="hover:text-yellow-400">Login</Link></li>
-          <li><Link to="/about" className="hover:text-yellow-400">About Us</Link></li>
-          <li><Link to="/contact" className="hover:text-yellow-400">Contact Us</Link></li>
+          <li>
+            <Link to="/signup" className="hover:text-yellow-400 flex items-center space-x-1">
+              <span>Signup</span>
+              <FaRegUserCircle className="text-white transform translate-y-0.5 " />
+            </Link>
+          </li>
+
+          <li className="relative">
+            <button 
+              onClick={toggleDropdown} 
+              className="hover:text-yellow-400 flex items-center space-x-1">
+              <span>More</span>
+              <IoMdArrowDropdown className="text-white" />
+            </button>
+            {isDropdownOpen && (
+              <ul ref={dropdownRef} className="absolute -left-14 mt-2 p-2 w-36
+               bg-red-600 rounded-md text-white z-40">
+                <li ref={dropdownRef}><Link to="/about"  className="block px-4 py-2 hover:text-yellow-400"
+                onClick={handleLinkClick}
+                >About Us</Link></li>
+                <li><Link to="/contact" className="block px-4 py-2 hover:text-yellow-400"
+                onClick={handleLinkClick}
+                >Contact Us</Link></li>
+              </ul>
+            )}
+          </li>
         </ul>
       </nav>
     </header>
